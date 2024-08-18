@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>D&M LEASING</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+   <script src="js/like.js"></script>
+   <script src="js/favorites-edit.js"></script>
+   <script src="js/visio.js"></script>
+   <script src="js/load-cars.js"></script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchForm = document.querySelector('.search-form');
+            const brandSelect = document.querySelector('select[name="brand"]');
+            const mileageFromInput = document.querySelector('input[name="mileage_from"]');
+            const mileageToInput = document.querySelector('input[name="mileage_to"]');
+            const priceFromInput = document.querySelector('input[name="price_from"]');
+            const priceToInput = document.querySelector('input[name="price_to"]');
+            const statusInputs = document.querySelectorAll('input[name="status"]');
+            const cards = document.querySelectorAll('.card');
+
+            searchForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const selectedBrand = brandSelect.value.toLowerCase();
+                const mileageFrom = parseInt(mileageFromInput.value) || 0;
+                const mileageTo = parseInt(mileageToInput.value) || 1000000;
+                const priceFrom = parseInt(priceFromInput.value) || 0;
+                const priceTo = parseInt(priceToInput.value) || 1000000;
+                let selectedStatus = '';
+
+                statusInputs.forEach(input => {
+                    if (input.checked) {
+                        selectedStatus = input.value.toLowerCase();
+                    }
+                });
+
+                cards.forEach(card => {
+                    const title = card.querySelector('.card__title').textContent.toLowerCase();
+                    const mileageText = card.querySelector('.mileage').textContent.toLowerCase();
+                    const priceText = card.querySelector('.price').textContent.toLowerCase();
+                    const damageText = card.querySelector('.damage').textContent.toLowerCase();
+
+                    let mileageValue = 0;
+                    if (mileageText.includes('k') || mileageText.includes('к')) {
+                        mileageValue = parseFloat(mileageText.replace('mileage ', '').replace('k', '').replace('к', '')) * 1000;
+                    } else {
+                        mileageValue = parseFloat(mileageText.replace('mileage ', ''));
+                    }
+
+                    const priceValue = parseFloat(priceText.replace('starting from $', ''));
+
+                    const matchesBrand = selectedBrand === "" || title.includes(selectedBrand);
+                    const matchesMileage = mileageValue >= mileageFrom && mileageValue <= mileageTo;
+                    const matchesPrice = priceValue >= priceFrom && priceValue <= priceTo;
+                    const matchesStatus = selectedStatus === '' || damageText.includes(selectedStatus);
+
+                    if (matchesBrand && matchesMileage && matchesPrice && matchesStatus) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <header class="header">
+        <div class="container">
+            <div class="header__inner">
+                <a href="Index.html" class="logo">
+                    <img src="images/logo.svg" alt="" class="logo__img">
+                </a>
+                <nav class="menu">
+                    <ul class="menu__list">
+                        <li class="menu__list-item"><a href="find.html" class="menu__list-link menu__list-link--active">Find a car</a></li>
+                        <li class="menu__list-item"><a href="new-cars.html" class="menu__list-link">NEW CARS</a></li>
+                        <li class="menu__list-item"><a href="LEASE-VS-BUY.html" class="menu__list-link">LEASE VS BUY</a></li>
+                        <li class="menu__list-item"><a href="Contacts.html" class="menu__list-link">CONTACT US</a></li>
+                        <li class="menu__list-item"><a href="favorite.html" class="menu__list-link">Favorite</a></li>
+                        <li class="menu__list-item"><a href="add-car.html" class="menu__list-link">Add car</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="choose">
+            <div class="container">
+                <h2 class="section-title">
+                    Choose your car
+                </h2>
+                <div class="finder">
+                    <form class="search-form">
+                        <select class="form__input" name="brand">
+                            <option value="">Select Brand</option>
+                            <option value="Toyota">Toyota</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Hyundai">Hyundai</option>
+                            <option value="Ford">Ford</option>
+                            <option value="Chevrolet">Chevrolet</option>
+                            <option value="KIA">KIA</option>
+                            <option value="Nissan">Nissan</option>
+                            <option value="Mazda">Mazda</option>
+                            <option value="Subaru">Subaru</option>
+                        </select>
+
+                        <input type="number" class="form__input" name="mileage_from" placeholder="Mileage From" min="0" max="50000" step="50000">
+                        <input type="number" class="form__input" name="mileage_to" placeholder="Mileage To" min="0" max="1000000" step="50000">
+
+                        <input type="number" class="form__input" name="price_from" placeholder="Price From" min="0" max="100000" step="5000">
+                        <input type="number" class="form__input" name="price_to" placeholder="Price To" min="0" max="100000" step="5000">
+
+                        <div class="form__input">
+                            <label>
+                                <input type="radio" name="status" value="clean"> Clean Title
+                            </label>
+                            <br>
+                            <label>
+                                <input type="radio" name="status" value="damage"> Damage
+                            </label>
+                        </div>
+
+                        <button class="form__btn" type="submit">SUBMIT</button>
+                    </form>
+                </div>
+                <h2 class="section-title">
+                    Search Results
+                </h2>
+                <div class="tabs">
+                    <div class="tabs__content">
+                        <div class="tabs__content-item" id="content-1">
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Toyota Crown 2023</h4>
+                                    <p class="card__text price">starting from $39900</p>
+                                    <p class="card__text mileage">Mileage 475k</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$ 650/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Prius Prime 2023</h4>
+                                    <p class="card__text price">starting from $39900</p>
+                                    <p class="card__text mileage">Mileage 652k</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$ 450/mo</p>
+                                    <img class="card__img__favorite" src="images/like/passion.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-3.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Toyota Prius 2023</h4>
+                                    <p class="card__text price">starting from $39900</p>
+                                    <p class="card__text mileage">Mileage 210k</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$ 400/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Honda Accord 2023</h4>
+                                    <p class="card__text price">starting from $27000</p>
+                                    <p class="card__text mileage">Mileage 135К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$450/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-3.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Hyundai Elantra 2023</h4>
+                                    <p class="card__text price">starting from $20000</p>
+                                    <p class="card__text mileage">Mileage 342К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$400/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-4.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Ford Mustang 2023</h4>
+                                    <p class="card__text price">starting from $27000</p>
+                                    <p class="card__text mileage">Mileage 763К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$510/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">KIA Seltos 2023</h4>
+                                    <p class="card__text price">starting from $22000</p>
+                                    <p class="card__text mileage">Mileage 402К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$554/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-3.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Nissan Altima 2023</h4>
+                                    <p class="card__text price">starting from $25000</p>
+                                    <p class="card__text mileage">Mileage 120К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$600/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-4.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Mazda CX-5 2023</h4>
+                                    <p class="card__text price">starting from $26000</p>
+                                    <p class="card__text mileage">Mileage 780К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$620/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Subaru Forester 2023</h4>
+                                    <p class="card__text price">starting from $28000</p>
+                                    <p class="card__text mileage">Mileage 675К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$650/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Toyota Camry 2023</h4>
+                                    <p class="card__text price">starting from $25000</p>
+                                    <p class="card__text mileage">Mileage 240К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$600/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Toyota Camry 2023</h4>
+                                    <p class="card__text price">starting from $25000</p>
+                                    <p class="card__text mileage">Mileage 357К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$600/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+
+                            <div class="card">
+                                <img class="card__img" src="images/card-4.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Hyundai Tucson 2023</h4>
+                                    <p class="card__text price">starting from $23000</p>
+                                    <p class="card__text mileage">Mileage 588К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$500/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Ford Escape 2023</h4>
+                                    <p class="card__text price">starting from $26000</p>
+                                    <p class="card__text mileage">Mileage 345К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$520/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Chevrolet Equinox</h4>
+                                    <p class="card__text price">starting from $25000</p>
+                                    <p class="card__text mileage">Mileage 678К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$510/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title price">Chevrolet Equinox</h4>
+                                    <p class="card__text">starting from $25000</p>
+                                    <p class="card__text mileage">Mileage 512К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$510/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-3.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">KIA Sportage 2023</h4>
+                                    <p class="card__text price">starting from $24000</p>
+                                    <p class="card__text mileage">Mileage 415К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$500/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-4.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Nissan Rogue 2023</h4>
+                                    <p class="card__text price">starting from $26000</p>
+                                    <p class="card__text mileage">Mileage 765К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$520/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Mazda3 2023</h4>
+                                    <p class="card__text price">starting from $20000</p>
+                                    <p class="card__text mileage">Mileage 590К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$420/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Mazda3 2023</h4>
+                                    <p class="card__text price">starting from $20000</p>
+                                    <p class="card__text mileage">Mileage 830К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$420/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Subaru Outback 2023</h4>
+                                    <p class="card__text price">starting from $27000</p>
+                                    <p class="card__text mileage">Mileage 320К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$550/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-3.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Toyota RAV4 2023</h4>
+                                    <p class="card__text price">starting from $27000</p>
+                                    <p class="card__text mileage">Mileage 422К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$560/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-4.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Honda Pilot 2023</h4>
+                                    <p class="card__text price">starting from $32000</p>
+                                    <p class="card__text mileage">Mileage 510К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$650/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Hyundai Santa Fe</h4>
+                                    <p class="card__text price">starting from $28000</p>
+                                    <p class="card__text mileage">Mileage 200К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$570/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Ford Edge 2023</h4>
+                                    <p class="card__text price">starting from $32000</p>
+                                    <p class="card__text mileage">Mileage 410К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$620/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-3.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Chevrolet Trailblazer</h4>
+                                    <p class="card__text price">starting from $22000</p>
+                                    <p class="card__text mileage">Mileage 380К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$460/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-4.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">KIA Sorento 2023</h4>
+                                    <p class="card__text price">starting from $30000</p>
+                                    <p class="card__text mileage">Mileage 450К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$620/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Nissan Murano 2023</h4>
+                                    <p class="card__text price">starting from $32000</p>
+                                    <p class="card__text mileage">Mileage 320К</p>
+                                    <p class="card__text damage">Damage</p>
+                                    <p class="card__price">$650/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-2.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Mazda6 2023</h4>
+                                    <p class="card__text price">starting from $24000</p>
+                                    <p class="card__text mileage">Mileage 670К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$500/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Subaru Forester 2023</h4>
+                                    <p class="card__text price">starting from $28000</p>
+                                    <p class="card__text mileage">Mileage 410К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$650/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Subaru Forester 2023</h4>
+                                    <p class="card__text price">starting from $28000</p>
+                                    <p class="card__text mileage">Mileage 410К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$650/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+
+                            <div class="card">
+                                <img class="card__img" src="images/card-1.jpg" alt="">
+                                <div class="card__content">
+                                    <h4 class="card__title">Subaru Forester 2023</h4>
+                                    <p class="card__text price">starting from $28000</p>
+                                    <p class="card__text mileage">Mileage 410К</p>
+                                    <p class="card__text damage">Clean Title</p>
+                                    <p class="card__price">$650/mo</p>
+                                    <img class="card__img__favorite" src="images/like/heart.png" alt="">
+                                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                                </div>
+                                <a href="#" class="card__link">see details</a>
+                            </div>
+                            <!-- модальне вікно -->
+                            <div id="editModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h2>Edit Car Details</h2>
+                                    <form id="editForm">
+                                        <label for="editTitle">Title:</label>
+                                        <input type="text" id="editTitle" name="title">
+                                        <label for="editPrice">Price:</label>
+                                        <input type="text" id="editPrice" name="price">
+                                        <label for="editMileage">Mileage:</label>
+                                        <input type="text" id="editMileage" name="mileage">
+                                        <label for="editDamage">Damage:</label>
+                                        <input type="text" id="editDamage" name="damage">
+                                        <label for="editMonthly">Monthly:</label>
+                                        <input type="text" id="editMonthly" name="monthly">
+                                        <button type="submit">Save</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- модальне вікно -->
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="showmore-link">SHOW MORE</a>
+            </div>
+        </section>
+        <section class="blog">
+            <div class="container">
+                <div class="blog__items">
+                    <div class="blog__item">
+                        <img src="images/blog-1.jpg" alt="" class="blog__item-img">
+                        <h4 class="blog__item-title">
+                            An easier way to buy your next Toyota
+                        </h4>
+                        <a href="#" class="blog__item-link">more</a>
+                    </div>
+                    <div class="blog__item">
+                        <img src="images/blog-2.jpg" alt="" class="blog__item-img">
+                        <h4 class="blog__item-title">
+                            A Guide to Road-Tripping With Pets
+                        </h4>
+                        <a href="#" class="blog__item-link">more</a>
+                    </div>
+                </div>
+                <a href="#" class="showmore-link">SHOW MORE</a>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <nav class="footer__menu">
+                <ul class="footer__menu-list">
+                    <li class="footer__menu-item"><p class="footer__menu-title">Products</p></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">Used</a></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">New</a></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">Sell your car</a></li>
+                </ul>
+                <ul class="footer__menu-list">
+                    <li class="footer__menu-item"><p class="footer__menu-title">Resources</p></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">Blog</a></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">FAQ</a></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">Contact us</a></li>
+                </ul>
+                <ul class="footer__menu-list">
+                    <li class="footer__menu-item"><p class="footer__menu-title">Work With TrueCar</p></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">Dealers</a></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link"></a></li>
+                </ul>
+                <ul class="footer__menu-list">
+                    <li class="footer__menu-item"><p class="footer__menu-title">About</p></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">About us</a></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">Team</a></li>
+                    <li class="footer__menu-item"><a href="#" class="footer__menu-link">Careers</a></li>
+                </ul>
+            </nav>
+            <ul class="app">
+                <li class="app__item">
+                    <a href="#" class="app__item-link">
+                        <img class="app__item-img" src="images/app%20store.svg" alt="App Store">
+                    </a>
+                </li>
+                <li class="app__item">
+                    <a href="#" class="app__item-link">
+                        <img class="app__item-img" src="images/google%20play%20logo.svg" alt="Google Play">
+                    </a>
+                </li>
+            </ul>
+            <div class="footer__copy">
+                <p class="footer__copy-text">
+                    For questions about the TrueCar Auto Buying Service please call 1-888-878-3227.
+                    Certified Dealers are contractually obligated by TrueCar to meet certain customer service requirements and complete the TrueCar Dealer Certification Program.
+                </p>
+                <p class="footer__copy-text">
+                    TrueCar does not broker, sell, or lease motor vehicles. Unless otherwise noted, all vehicles shown on this website are offered for sale by licensed motor vehicle dealers. All vehicles are subject to prior sale. By accessing this website, you agree to the TrueCar Terms of Service and Privacy Policy.
+                </p>
+            </div>
+            <nav class="copy__nav">
+                <ul class="copy__nav-list">
+                    <li class="copy__nav-item"><a href="#" class="copy__nav-link">Terms of Service</a></li>
+                    <li class="copy__nav-item"><a href="#" class="copy__nav-link">Privacy Policy</a></li>
+                    <li class="copy__nav-item"><a href="#" class="copy__nav-link">Do Not Sell My Personal Information</a></li>
+                </ul>
+            </nav>
+        </div>
+    </footer>
+</div>
+</body>
+</html>

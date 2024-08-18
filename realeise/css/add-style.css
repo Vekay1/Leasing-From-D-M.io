@@ -1,0 +1,166 @@
+#carList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.card {
+    flex: 0 1 calc(25% - 20px);
+    text-align: center;
+    border: 1px solid #ddd;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card__img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card__content {
+    padding: 0 5px;
+    border: 1px solid #0066ff;
+    border-top: 0;
+}
+
+.card__title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-top: 20px;
+}
+
+.card__text {
+    margin-bottom: 20px;
+}
+
+.card__price {
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+.card__link {
+    display: block;
+    color: #0066ff;
+    border: 1px solid #0066ff;
+    border-top: 0;
+    text-decoration: none;
+    padding: 10px 0;
+    margin-bottom: 0;
+}
+
+.card__link:hover {
+    background-color: #f0f0f0;
+}
+
+.card__img__favorite,
+.edit-btn {
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.add-car-section {
+    padding: 50px 0;
+    background-color: #f9f9f9;
+}
+
+.add-car-form {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.form__input-wrapper {
+    width: 30%;
+}
+
+.form__input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.form__btn {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background-color: #151515;
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    cursor: pointer;
+}
+
+.results-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.results-container .card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: white;
+    text-align: center;
+}
+
+.results-container .card img {
+    max-width: 100%;
+    height: auto;
+}
+
+.results-container .card .card__title {
+    font-size: 24px;
+    margin: 15px 0;
+}
+
+.results-container .card .card__text {
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.results-container .card .card__price {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.file-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.file-input {
+    width: 100%;
+    padding: 10px;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+}
+
+.file-input-label {
+    display: inline-block;
+    padding: 10px;
+    background-color: #151515;
+    color: #fff;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.file-input:hover + .file-input-label {
+    background-color: #333;
+}
+.file-input-wrapper{
+    margin-top: 10px;
+}

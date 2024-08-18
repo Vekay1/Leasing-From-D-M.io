@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Car</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/add-style.css">
+
+
+</head>
+<body>
+<div class="wrapper">
+    <header class="header">
+        <div class="container">
+            <div class="header__inner">
+                <a href="Index.html" class="logo">
+                    <img src="images/logo.svg" alt="" class="logo__img">
+                </a>
+                <nav class="menu">
+                    <ul class="menu__list">
+                        <li class="menu__list-item"><a href="find.html" class="menu__list-link">Find a car</a></li>
+                        <li class="menu__list-item"><a href="new-cars.html" class="menu__list-link">NEW CARS</a></li>
+                        <li class="menu__list-item"><a href="LEASE-VS-BUY.html" class="menu__list-link">LEASE VS BUY</a></li>
+                        <li class="menu__list-item"><a href="Contacts.html" class="menu__list-link">CONTACT US</a></li>
+                        <li class="menu__list-item"><a href="favorite.html" class="menu__list-link menu__fav"><img src="images/like/add-to-cart.png"></a></li>
+                        <li class="menu__list-item"><a href="add-car.html" class="menu__list-link menu__list-link--active menu__add">+ Add car</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="add-car-section">
+            <div class="container">
+                <h2 class="section-title">Add a New Car</h2>
+                <form id="addCarForm" class="add-car-form">
+                    <div class="form__input-wrapper">
+                        <label for="carTitle">Title:</label>
+                        <input type="text" id="carTitle" name="title" class="form__input" required>
+                    </div>
+
+                    <div class="form__input-wrapper">
+                        <label for="carPrice">Price:</label>
+                        <input type="text" id="carPrice" name="price" class="form__input" required>
+                    </div>
+
+                    <div class="form__input-wrapper">
+                        <label for="carMileage">Mileage:</label>
+                        <input type="text" id="carMileage" name="mileage" class="form__input" required>
+                    </div>
+
+                    <div class="form__input-wrapper">
+                        <label for="carDamage">Damage:</label>
+                        <input type="text" id="carDamage" name="damage" class="form__input" required>
+                    </div>
+
+                    <div class="form__input-wrapper">
+                        <label for="carMonthly">Monthly:</label>
+                        <input type="text" id="carMonthly" name="monthly" class="form__input" required>
+                    </div>
+
+                    <div class="form__input-wrapper">
+                        <label for="carImage">Image:</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="carImage" name="image" class="form__input file-input" accept="image/*" required>
+                            <span class="file-input-label">Choose File</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="form__btn">Add Car</button>
+                </form>
+
+                <h2 class="section-title">Your Cars</h2>
+                <div id="carList" class="results-container"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+        </div>
+    </footer>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const carList = document.getElementById('carList');
+        const addCarForm = document.getElementById('addCarForm');
+
+        function getCarsFromLocalStorage() {
+            const cars = localStorage.getItem('cars');
+            return cars ? JSON.parse(cars) : [];
+        }
+
+        function setCarsToLocalStorage(cars) {
+            localStorage.setItem('cars', JSON.stringify(cars));
+        }
+
+        function renderCars(cars) {
+            carList.innerHTML = '';
+            cars.forEach(car => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                <img class="card__img" src="${car.imageUrl}" alt="${car.title}">
+                <div class="card__content">
+                    <h4 class="card__title">${car.title}</h4>
+                    <p class="card__text price">starting from ${car.price}</p>
+                    <p class="card__text mileage">Mileage ${car.mileage}</p>
+                    <p class="card__text damage">${car.damage}</p>
+                    <p class="card__price">${car.monthly}</p>
+                    <img class="card__img__favorite" src="images/like/heart.png" alt="Favorite">
+                    <img class="edit-btn" src="images/like/pencil.png" alt="Edit" style="cursor: pointer;">
+                </div>
+                <a href="#" class="card__link">see details</a>
+            `;
+                carList.appendChild(card);
+            });
+        }
+
+        addCarForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const title = document.getElementById('carTitle').value;
+            const price = document.getElementById('carPrice').value;
+            const mileage = document.getElementById('carMileage').value;
+            const damage = document.getElementById('carDamage').value;
+            const monthly = document.getElementById('carMonthly').value;
+            const imageFile = document.getElementById('carImage').files[0];
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const imageUrl = event.target.result;
+                const newCar = {
+                    title,
+                    price,
+                    mileage,
+                    damage,
+                    monthly,
+                    imageUrl
+                };
+
+                let cars = getCarsFromLocalStorage();
+                cars.push(newCar);
+                setCarsToLocalStorage(cars);
+                renderCars(cars);
+                alert('Car added successfully!');
+                addCarForm.reset();
+            };
+            reader.readAsDataURL(imageFile);
+        });
+
+        renderCars(getCarsFromLocalStorage());
+    });
+</script>
+</body>
+</html>
